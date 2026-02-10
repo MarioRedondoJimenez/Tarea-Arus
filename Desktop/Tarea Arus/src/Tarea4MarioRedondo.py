@@ -15,16 +15,15 @@ Datos:
 def probabilidad (v_real:int):
 
     q_real = np.random.normal(0, 2) # Ruido con distribución normal N(0,2)
-    v_media = v_real + q_real #Calculamos la velocidad media
+    v_medido = v_real + q_real #Calculamos la velocidad media
 
     # Hacemos la distribución normal
-    probabilidad = norm.pdf(v_media, v_real, 2) # Ponemos scale=2 pq el ruido tiene una desviación tipica de 2
+    probabilidad = norm.pdf(v_medido, v_real, 2) # Ponemos scale=2 pq el ruido tiene una desviación tipica de 2
     return probabilidad
 
 # Filtro de Kalman
 def filtro_kalman(variacion:int, ruido:float, v_real:int):
     
-    prob = probabilidad(v_real)
     varianza = 2*2 #Como el ruido sigue una distribución normal N(0,2) nuestra desv. tipica es 2.
     p_pred = variacion + ruido #Calculamos una predicción de nuestra variación
     K = p_pred / (p_pred + varianza) #Calculamos el filtro de Kalman
@@ -33,12 +32,13 @@ def filtro_kalman(variacion:int, ruido:float, v_real:int):
 #Creamos una nueva función para calcular la velocidad filtrada
 def tupla_kalman(filtro:float, v_real:int, variacion:int, ruido:float):
     q_real = np.random.normal(0, 2) #Este es el ruido real q sigue una distribución N(0,2)
-    v_media = v_real + q_real
+    v_medido = v_real + q_real
     #Aplicamos el filtro y calculamos la velocidad filtrada
-    v_filtrada = v_real + filtro * (v_media - v_real)
+    v_filtrada = v_real + filtro * (v_medido - v_real)
+
     p_pred = variacion + ruido #Calculamos una predicción de nuestra variación
     p_filtrada = (1-filtro) * p_pred #Miramos si nos podemos fiar o no de nuestro filtro
-    t = [v_filtrada, p_filtrada]
+    t = [v_filtrada, p_filtrada, v_medido]
     return t
 
 
