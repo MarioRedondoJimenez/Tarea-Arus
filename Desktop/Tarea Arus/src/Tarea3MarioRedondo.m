@@ -1,11 +1,18 @@
 %% Tarea3-MarioRedondo
 
+%Creamos una función para que sea más util 
+%y poder cambiar algunos parametros
+function simular_bicicleta(m, Cd, dt, t_final)
 %% PARAMETROS
+%Parametros de entrada
+% Cd = Coeficiente de arrastre
+% m = Masa original (kg)
+% dt = Diferencial de tiempo
+% t_final = Tiempo total transcurrido (s)
+
 % Parámetros del vehículo
-mass_original = 1200; % Masa original (kg)
 I = 2000; % Inercia (kg*m^2)
 L = 2.5; % Longitud entre ejes (m)
-Cd = 0.3; % Coeficiente de arrastre
 A = 2.2; % Área frontal (m^2)
 g = 9.81; % Gravedad (m/s^2)
 
@@ -15,8 +22,6 @@ brake = @(t) 0; % Sin frenado
 delta = @(t) min(pi/6, max(-pi/6, 0.1 * sin(0.1*t))); % Dirección
 
 %Creamos unos parametros de simulación
-dt = 0.1;
-t_final = 50;
 t = 0:dt:t_final; %Vector tiempo ej: [0.1, 0.2,...,50]
 n = length(t);
 
@@ -30,14 +35,20 @@ theta = zeros(1 ,n); %Angulo de orientación (rad)
 %Creamos una simulación
 for i = 1:n-1
     %Calculamos fuerza de movimiento. 2ºLey_Newton: F=m*a
-    F_throttle = mass_original * throttle(t(i)) ;
+    F_throttle = m * throttle(t(i)) ;
     %Calculamos la fuerza que haría el aire
     %Nos vamos a inventar una variable que se llamará p
     p = 1.225; % Densidad del aire (kg/m^3)
     F_drag = 0.5 * p * Cd * A * v(i)^2;
 
+    % Calculamos la fuerza de fricción (opcional)
+    %Nos vamos a inventar otro parámetro llamado mu
+    mu = 0.02; %Coeficiente de rozamiento
+    F_friction = mu * m * g; 
+    F_t = F_throttle - F_drag - F_friction; % Fuerza Total
+
     % Calculamos la aceleración
-    a = (F_throttle - F_drag) / mass_original;
+    a = (F_t) / m;
 
     % Actualizamos la velocidad y la posición
     v(i+1) = v(i) + a * dt;
@@ -74,3 +85,12 @@ xlabel('Tiempo (s)');
 ylabel('Velocidad (m/s)');
 title('Velocidad');
 grid on;
+
+end
+
+%% Simulaciones
+mass_original = 1200;
+mass_modified = 1800;
+
+simular_bicicleta(mass_original, 0.3, 0.1, 50);
+simular_bicicleta(mass_modified, 0.3, 0.1, 50);
