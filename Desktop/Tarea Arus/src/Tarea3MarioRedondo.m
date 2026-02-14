@@ -1,4 +1,11 @@
 %% Tarea3-MarioRedondo
+clc; clear; close all;
+%% Simulaciones
+mass_original = 1200;
+mass_modified = 1800;
+
+simular_bicicleta(mass_original, 0.3, 0.1, 50);
+simular_bicicleta(mass_modified, 0.3, 0.1, 50);
 
 %Creamos una función para que sea más util 
 %y poder cambiar algunos parametros
@@ -88,9 +95,3 @@ grid on;
 
 end
 
-%% Simulaciones
-mass_original = 1200;
-mass_modified = 1800;
-
-simular_bicicleta(mass_original, 0.3, 0.1, 50);
-simular_bicicleta(mass_modified, 0.3, 0.1, 50);
